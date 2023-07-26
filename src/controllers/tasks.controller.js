@@ -88,34 +88,33 @@ const getSingleTask = async (req, res) => {
 
 // update task
 const updateTask = async (req, res) => {
-    
-    const existingTask = await Task.findOne({ name: req.body.name });
+  const existingTask = await Task.findOne({ name: req.body.name });
 
-    if (existingTask) {
-        return res.status(200).json({
-            status: "failed",
-            message: "Task already exists"
-        })
-    }
+  if (existingTask) {
+    return res.status(200).json({
+      status: "failed",
+      message: "Task already exists",
+    });
+  }
   try {
     const { id } = req.params;
     const task = await Task.findByIdAndUpdate(id, req.body, {
-    new: true,
-    })
+      new: true,
+    });
 
-      if (task) {
-        return res.status(200).json({
-          status: "success",
-          message: "Task successfully updated",
-          data: task,
-        });
-      }
+    if (task) {
+      return res.status(200).json({
+        status: "success",
+        message: "Task successfully updated",
+        data: task,
+      });
+    }
 
-        if (!task) { 
-            return res.status(404).json({
-          status: "failed",
-          message: "Task not found",
-        });
+    if (!task) {
+      return res.status(404).json({
+        status: "failed",
+        message: "Task not found",
+      });
     }
   } catch (error) {
     console.log(error);
@@ -127,9 +126,30 @@ const updateTask = async (req, res) => {
 };
 
 
+// delete task
+const deleteTask = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const task = await Task.findByIdAndDelete(id);
 
-const deleteTask = (req, res) => {
-  res.send("Delete task");
+    if (!task) {
+      return res.status(404).json({
+        status: "failed",
+        message: "Task not found",
+      });
+    }
+    return res.status(200).json({
+      status: "success",
+      message: "Task successfully deleted",
+      data: task,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      status: "failed",
+      message: "Internal server error",
+    });
+  }
 };
 
 export { getAllTasks, createTask, getSingleTask, updateTask, deleteTask };
