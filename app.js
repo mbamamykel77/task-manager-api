@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 import { router as taskRoute } from "./src/routes/tasks.route.js";
 import "./src/db/connect.js";
+import { notFound } from "./src/middleware/notFound.js";
 
 const app = express();
 const port = Number(process.env.PORT) || 3000;
@@ -14,6 +15,8 @@ app.get("/", (req, res) => {
   res.send("Task Manager App");
 });
 app.use("/api/v1/task", taskRoute);
+
+app.use(notFound)
 
 // mongodb connection
 mongoose
